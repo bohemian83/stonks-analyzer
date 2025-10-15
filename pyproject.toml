@@ -5,9 +5,17 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-    "asciichartpy>=1.5.25",
-    "click>=8.3.0",
-    "pandas>=2.3.3",
-    "rich>=14.2.0",
-    "typer>=0.19.2",
+  "asciichartpy>=1.5.25",
+  "click>=8.3.0",
+  "pandas>=2.3.3",
+  "rich>=14.2.0",
+  "textual>=6.3.0",
+  "textual-plotext>=1.0.1",
+  "yfinance>=0.2.66",
 ]
+
+[project.scripts]
+stonks = "stonks_analyzer.cli:cli"
+
+[tool.uv]
+package = true
