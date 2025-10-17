@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [project.scripts]
-stonks = "stonks_analyzer.cli:cli"
+stonks = "stonks_analyzer.main:main"
 
 [tool.uv]
 package = true
