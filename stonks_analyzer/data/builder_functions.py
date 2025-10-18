@@ -7,7 +7,9 @@ logging.getLogger("yfinance").setLevel(logging.CRITICAL)
 
 
 def calculate_rsi(ticker):
-    data = yf.download(ticker, period="3mo", interval="1d")
+    data = yf.download(
+        ticker, period="3mo", interval="1d", progress=False, auto_adjust=True
+    )
 
     delta = data["Close"].diff()
 
@@ -32,7 +34,9 @@ def calculate_sma(ticker, days):
     end_date = datetime.today().strftime("%Y-%m-%d")
 
     # Grab the stock data
-    stock_data = yf.download(ticker, start=start_date, end=end_date)
+    stock_data = yf.download(
+        ticker, start=start_date, end=end_date, progress=False, auto_adjust=True
+    )
 
     # Compute the simple moving average (SMA)
     stock_data["SMA"] = stock_data["Close"].rolling(window=number_days).mean()
@@ -45,7 +49,9 @@ def calculate_30d_volatility(ticker):
     end_date = datetime.today().strftime("%Y-%m-%d")
     stock_name = ticker
 
-    stock = yf.download(stock_name, init_date, end_date)
+    stock = yf.download(
+        stock_name, init_date, end_date, progress=False, auto_adjust=True
+    )
     stock["lag_close"] = stock["Close"].shift(1)
     stock["log_return"] = np.log(stock["Close"].iloc[:, 0] / stock["lag_close"])
     vol = np.std(stock["log_return"])
@@ -72,7 +78,9 @@ def build_meta(stock):
 
 def build_price_data(ticker, period):
     end = datetime.today().strftime("%Y-%m-%d")
-    historical_data = yf.download(ticker, end=end, period=period, interval="1d")
+    historical_data = yf.download(
+        ticker, end=end, period=period, interval="1d", progress=False, auto_adjust=True
+    )
     historical_data = historical_data.reset_index()
 
     price_history = []
