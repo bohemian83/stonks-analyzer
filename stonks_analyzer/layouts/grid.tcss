@@ -1,0 +1,72 @@
+#top {
+    height: 10%;
+    width: 100%;
+    layout: grid;
+    grid-size: 3 1;
+    border: solid;
+}
+
+#bottom {
+    height: 10%;
+    width: 100%;
+    layout: grid;
+    grid-size: 3 1;
+    border: solid;
+}
+
+#main {
+    height: 80%;
+    width: 100%;
+    layout: grid;
+    grid-size: 3 1;
+    grid-columns: 1fr 8fr 1fr;
+    border: solid;
+}
+
+#left-main-col {
+    height: 1fr;
+    border: solid;
+}
+
+#center-main-col {
+    height: 1fr;
+    border: solid;
+    grid-size: 1 2;
+    grid-rows: 7fr 1fr;
+}
+
+#right-main-col {
+    height: 1fr;
+    border: solid;
+    grid-size: 1 12;
+}
+
+#left-main-col {
+    height: 1fr;
+    border: solid;
+    grid-size: 1 8;
+}
+
+.rcl, .lcl {
+    width: 1fr;
+    border: solid;
+}
+
+#graph {
+    border: solid;
+}
+
+#under-graph {
+    border: solid;
+    grid-size: 3 1;
+}
+
+
+
+#ug1, #ug2, #ug3 {
+    border: solid;
+}
+
+#p1, #p2, #p3, #p4, #p5, #p6 {
+    border: solid;
+}
