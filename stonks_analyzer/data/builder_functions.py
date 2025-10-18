@@ -1,6 +1,9 @@
 import yfinance as yf
 import numpy as np
 from datetime import datetime, timedelta
+import logging
+
+logging.getLogger("yfinance").setLevel(logging.CRITICAL)
 
 
 def calculate_rsi(ticker):
