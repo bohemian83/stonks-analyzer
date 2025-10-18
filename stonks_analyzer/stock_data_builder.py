@@ -1,5 +1,5 @@
 import yfinance as yf
-from stonks_analyzer.data.data_builder import (
+from stonks_analyzer.data.builder_functions import (
     build_meta,
     build_analyst_summary,
     build_fundamentals,
@@ -7,13 +7,20 @@ from stonks_analyzer.data.data_builder import (
     build_technical_indicators,
     build_valuation_ratios,
 )
+import logging
+
+logging.getLogger("yfinance").setLevel(logging.CRITICAL)
 
 
-def get_yfinance_data(stock_name):
-    stock = yf.Ticker(stock_name)
-    ticker = stock.info["symbol"]
+def get_stock_data(ticker):
+    stock = yf.Ticker(ticker)
+    symbol = stock.info.get("symbol", None)
+
+    if not symbol:
+        raise Exception("Ticker not found")
+
     stock_data = {
-        "ticker": ticker,
+        "ticker": ticker.upper(),
         "meta": build_meta(stock),
         "price_data": build_price_data(ticker, "1y"),
         "fundamentals": build_fundamentals(stock),
