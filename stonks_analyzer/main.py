@@ -1,5 +1,5 @@
 import sys
-from stonks_analyzer.finance_data import get_yfinance_data
+from stonks_analyzer.stock_data_builder import get_stock_data
 
 """
 ===================================================================================
@@ -36,20 +36,22 @@ from stonks_analyzer.finance_data import get_yfinance_data
 """
 
 
-def analyze(stock_name):
+def analyze(ticker):
     """Analyze a single stock"""
 
-    stock_data = get_yfinance_data(stock_name)
-    print(f"Analyzing stock: {stock_name}")
-    # Your analysis logic here
-    print(stock_data)
+    try:
+        stock_data = get_stock_data(ticker)
+        print(f"Analyzing stock: {ticker}")
+        # Your analysis logic here
+    except Exception as e:
+        print(f"Error: {e}")
 
 
-def compare(stock1, stock2):
+def compare(ticker1, ticker2):
     """Compare two stocks"""
-    stock1_data = get_yfinance_data(stock1)
-    stock2_data = get_yfinance_data(stock2)
-    print(f"Comparing {stock1} vs {stock2}")
+    stock1_data = get_stock_data(ticker1)
+    stock2_data = get_stock_data(ticker2)
+    print(f"Comparing {ticker1} vs {ticker2}")
     # Your comparison logic here
 
 
@@ -65,17 +67,17 @@ def main():
             print("Usage: uv run stonks [options] analyze STOCK")
             sys.exit(1)
 
-        stock_name = sys.argv[2]
-        analyze(stock_name)
+        ticker = sys.argv[2]
+        analyze(ticker)
 
     if sys.argv[1] == "compare":
         if len(sys.argv) < 4:
             print("Usage: uv run stonks [options] analyze STOCK")
             sys.exit(1)
 
-        stock1 = sys.argv[2]
-        stock2 = sys.argv[3]
-        compare(stock1, stock2)
+        ticker1 = sys.argv[2]
+        ticker2 = sys.argv[3]
+        compare(ticker1, ticker2)
 
 
 if __name__ == "__main__":
