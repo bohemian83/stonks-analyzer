@@ -1,5 +1,7 @@
 import sys
 from stonks_analyzer.stock_data_builder import get_stock_data
+from stonks_analyzer.layouts.grid_tcss import GridLayoutWithTCSS
+import logging
 
 """
 ===================================================================================
@@ -31,18 +33,20 @@ from stonks_analyzer.stock_data_builder import get_stock_data
 |-------------------------------------------------------------------------------------------------|
 | ⚙️ 30-Day Volatility: 0.12   |  📈 Beta: 1.3   |  📊 RSI(14): 68 (Slightly overbought)                   |
 | 📊 50-Day MA: 215.4  |  📊 200-Day MA: 190.1  → Bullish Trend (Golden Cross)                       |
-| 💵 Dividend Yield: 0.5%  |  💹 Revenue Growth YoY: +2%  |  📉 Earnings Growth YoY: –1%                        |
 ===================================================================================
 """
+
+logging.getLogger("yfinance").setLevel(logging.CRITICAL)
 
 
 def analyze(ticker):
     """Analyze a single stock"""
 
     try:
+        app = GridLayoutWithTCSS()
+        app.run()
         stock_data = get_stock_data(ticker)
-        print(f"Analyzing stock: {ticker}")
-        # Your analysis logic here
+        # print(f"Analyzing stock: {ticker}")
     except Exception as e:
         print(f"Error: {e}")
 
@@ -52,7 +56,6 @@ def compare(ticker1, ticker2):
     stock1_data = get_stock_data(ticker1)
     stock2_data = get_stock_data(ticker2)
     print(f"Comparing {ticker1} vs {ticker2}")
-    # Your comparison logic here
 
 
 def main():
