@@ -7,9 +7,6 @@ from stonks_analyzer.data.builder_functions import (
     build_technical_indicators,
     build_valuation_ratios,
 )
-import logging
-
-logging.getLogger("yfinance").setLevel(logging.CRITICAL)
 
 
 def get_stock_data(ticker):
