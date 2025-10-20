@@ -1,6 +1,5 @@
 import sys
-from stonks_analyzer.stock_data_builder import get_stock_data
-from stonks_analyzer.layouts.grid_tcss import GridLayoutWithTCSS
+from stonks_analyzer.analyze_app import AnalyseApp
 import logging
 
 """
@@ -43,18 +42,14 @@ def analyze(ticker):
     """Analyze a single stock"""
 
     try:
-        app = GridLayoutWithTCSS()
+        app = AnalyseApp(ticker)
         app.run()
-        stock_data = get_stock_data(ticker)
-        # print(f"Analyzing stock: {ticker}")
     except Exception as e:
         print(f"Error: {e}")
 
 
 def compare(ticker1, ticker2):
     """Compare two stocks"""
-    stock1_data = get_stock_data(ticker1)
-    stock2_data = get_stock_data(ticker2)
     print(f"Comparing {ticker1} vs {ticker2}")
 
 
