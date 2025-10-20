@@ -1,11 +1,10 @@
-from textual.app import App, ComposeResult
-from textual.containers import Grid, Horizontal, Vertical
-from textual.widgets import Static, Placeholder
+from textual.widget import Widget
+from textual.app import ComposeResult
+from textual.containers import Vertical, Grid
+from textual.widgets import Placeholder
 
 
-class GridLayoutWithTCSS(App):
-    CSS_PATH = "grid.tcss"
-
+class StockDashboard(Widget):
     def compose(self) -> ComposeResult:
         yield Vertical(
             Grid(
@@ -61,8 +60,3 @@ class GridLayoutWithTCSS(App):
             ),
             id="content",
         )
-
-
-if __name__ == "__main__":
-    app = GridLayoutWithTCSS()
-    app.run()
