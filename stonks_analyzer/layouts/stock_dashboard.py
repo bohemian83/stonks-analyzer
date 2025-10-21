@@ -1,16 +1,19 @@
 from textual.widget import Widget
 from textual.app import ComposeResult
 from textual.containers import Vertical, Grid
-from textual.widgets import Placeholder
+from textual.widgets import Static, Placeholder
 
 
 class StockDashboard(Widget):
     def compose(self) -> ComposeResult:
         yield Vertical(
             Grid(
-                Placeholder("This is a custom label for p1.", id="p1"),
-                Placeholder("This is a custom label for p1.", id="p2"),
-                Placeholder("This is a custom label for p1.", id="p3"),
+                Static("", id="top1"),
+                Static("", id="top2"),
+                Static("", id="top3"),
+                Static("", id="top4"),
+                Static("", id="top5"),
+                Static("", id="top6"),
                 id="top",
             ),
             Grid(
@@ -53,9 +56,12 @@ class StockDashboard(Widget):
                 id="main",
             ),
             Grid(
-                Placeholder("This is a custom label for p4.", id="p4"),
-                Placeholder("This is a custom label for p5.", id="p5"),
-                Placeholder("This is a custom label for p6.", id="p6"),
+                Static("", id="btm1"),
+                Static("", id="btm2"),
+                Static("", id="btm3"),
+                Static("", id="btm4"),
+                Static("", id="btm5"),
+                Static("", id="bmt6"),
                 id="bottom",
             ),
             id="content",
