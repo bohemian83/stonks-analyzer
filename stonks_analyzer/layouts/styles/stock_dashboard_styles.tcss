@@ -2,15 +2,15 @@
     height: 10%;
     width: 100%;
     layout: grid;
-    grid-size: 3 1;
-    border: solid;
+    grid-size: 3 2;
+    grid-rows: 1fr 1fr;
 }
 
 #bottom {
     height: 10%;
     width: 100%;
     layout: grid;
-    grid-size: 3 1;
+    grid-size: 3 2;
     border: solid;
 }
 
@@ -61,12 +61,18 @@
     grid-size: 3 1;
 }
 
-
-
 #ug1, #ug2, #ug3 {
     border: solid;
 }
 
-#p1, #p2, #p3, #p4, #p5, #p6 {
-    border: solid;
+#top1, #top2, #top3, #top4, #top5, #top6 {
+    color: white;
+    height: 100%;
+    content-align: center middle;
+}
+
+#btm1, #btm2, #btm3, #btm4, #btm5, #btm6 {
+    color: white;
+    height: 100%;
+    content-align: center middle; 
 }
