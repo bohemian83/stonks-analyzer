@@ -1,0 +1,32 @@
+TickerInputScreen {
+    align: center middle;
+}
+
+#ticker-dialog {
+    width: 50;
+    height: auto;
+    border: thick $background 80%;
+    background: $surface;
+    padding: 1 2;
+}
+
+#ticker-input {
+    margin: 1 0;
+}
+
+#ticker-error {
+    color: $error;
+    height: auto;
+    min-height: 1;
+    margin: 0 0 1 0;
+}
+
+#buttons {
+    width: 100%;
+    height: auto;
+    align: center middle;
+}
+
+Button {
+    margin: 0 1;
+}
