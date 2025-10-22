@@ -6,10 +6,20 @@ import logging
 logging.getLogger("yfinance").setLevel(logging.CRITICAL)
 
 
-def calculate_rsi(ticker):
-    data = yf.download(
-        ticker, period="3mo", interval="1d", progress=False, auto_adjust=True
-    )
+def format_number(n):
+    suffixes = ["", "K", "M", "B", "T"]
+    index = 0
+    while abs(n) >= 1000 and index < len(suffixes) - 1:
+        n /= 1000.0
+        index += 1
+    if n.is_integer():
+        return f"{int(n)}{suffixes[index]}"
+    else:
+        return f"{n:.1f}{suffixes[index]}"
+
+
+def calculate_rsi(data_rsi):
+    data = data_rsi
 
     delta = data["Close"].diff()
 
@@ -22,43 +32,40 @@ def calculate_rsi(ticker):
 
     rs = avg_gain / avg_loss
     rsi = 100 - (100 / (1 + rs))
+    rsi14 = round(rsi.iloc[-1].item(), 0)
 
-    return rsi.iloc[-1].item()
+    assessment = ""
+    if 0 < rsi14 < 20:
+        assessment = "Deeply oversold"
+    elif 20 <= rsi14 < 40:
+        assessment = "Bearish zone"
+    elif 40 <= rsi14 < 60:
+        assessment = "Neutral zone"
+    elif 60 <= rsi14 < 80:
+        assessment = "Bullish zone"
+    else:
+        assessment = "Extremely overbought"
+
+    return rsi14, assessment
 
 
-def calculate_sma(ticker, days):
+def calculate_sma(data_sma, days):
+    data = data_sma
     number_days = days
-    start_date = (datetime.today() - timedelta(days=number_days * 2)).strftime(
-        "%Y-%m-%d"
-    )
-    end_date = datetime.today().strftime("%Y-%m-%d")
+    data["SMA"] = data["Close"].rolling(window=number_days).mean()
 
-    # Grab the stock data
-    stock_data = yf.download(
-        ticker, start=start_date, end=end_date, progress=False, auto_adjust=True
-    )
-
-    # Compute the simple moving average (SMA)
-    stock_data["SMA"] = stock_data["Close"].rolling(window=number_days).mean()
-
-    return stock_data["SMA"].iloc[-1].item()
+    return data["SMA"].iloc[-1].item()
 
 
-def calculate_30d_volatility(ticker):
-    init_date = (datetime.today() - timedelta(days=30)).strftime("%Y-%m-%d")
-    end_date = datetime.today().strftime("%Y-%m-%d")
-    stock_name = ticker
-
-    stock = yf.download(
-        stock_name, init_date, end_date, progress=False, auto_adjust=True
-    )
-    stock["lag_close"] = stock["Close"].shift(1)
-    stock["log_return"] = np.log(stock["Close"].iloc[:, 0] / stock["lag_close"])
-    vol = np.std(stock["log_return"])
+def calculate_30d_volatility(data_vol):
+    data = data_vol
+    data["lag_close"] = data["Close"].shift(1)
+    data["log_return"] = np.log(data["Close"].iloc[:, 0] / data["lag_close"])
+    vol = np.std(data["log_return"])
     vol_annual_log = 252**0.5 * vol
     vol_annual_effective = np.exp(vol_annual_log) - 1
 
-    return vol_annual_effective
+    return round(vol_annual_effective.item(), 2)
 
 
 def build_meta(stock):
@@ -67,7 +74,7 @@ def build_meta(stock):
         "company_name": stock_info["shortName"],
         "sector": stock_info["sector"],
         "industry": stock_info["industry"],
-        "market_cap": stock_info["marketCap"],
+        "market_cap": format_number(stock_info["marketCap"]),
         "exchange": stock_info["fullExchangeName"],
         "currency": stock_info["currency"],
         "country": stock_info["country"],
@@ -96,7 +103,20 @@ def build_price_data(ticker, period):
             }
         )
 
-    return price_history
+    pct_change = (
+        price_history[-1]["close"] - price_history[-2]["close"]
+    ) / price_history[-2]["close"]
+
+    if pct_change > 0:
+        change = "▲"
+    elif pct_change < 0:
+        change = "▼"
+    else:
+        change = "➖"
+
+    pct_change = abs(pct_change)
+
+    return price_history, f"{change} {pct_change:.1%}"
 
 
 def build_fundamentals(stock):
@@ -143,13 +163,32 @@ def build_valuation_ratios(stock):
 def build_technical_indicators(stock):
     stock_info = stock.info
     ticker = stock_info["symbol"]
+
+    data = yf.download(
+        ticker, period="1y", interval="1d", progress=False, auto_adjust=True
+    )
+    data = data.reset_index()
+
+    data_len = data["Date"].size
+    data_rsi = data[-90:data_len].copy()
+    data_50d = data[-100:data_len].copy()
+    data_200d = data[-200:data_len].copy()
+    data_30d = data[-30:data_len].copy()
+
+    sma_50d = round(calculate_sma(data_50d, 50), 2)
+    sma_200d = round(calculate_sma(data_200d, 200), 2)
+
     technical_indicators = {
-        "rsi_14": calculate_rsi(ticker),
-        "50_day_ma": calculate_sma(ticker, 50),
-        "200_day_ma": calculate_sma(ticker, 200),
+        "rsi_14": calculate_rsi(data_rsi),
+        "50_day_ma": sma_50d,
+        "200_day_ma": sma_200d,
+        "cross": "Bullish Trend -> Golden Cross"
+        if sma_50d > sma_200d
+        else "Bearish Trend -> Death Cross",
         "beta": stock_info["beta"],
-        "volatility_30d": calculate_30d_volatility(ticker),
+        "volatility_30d": calculate_30d_volatility(data_30d),
     }
+
     return technical_indicators
 
 
@@ -166,3 +205,23 @@ def build_analyst_summary(stock):
     }
 
     return analyst_summary
+
+
+def get_stock_data(ticker):
+    stock = yf.Ticker(ticker)
+    symbol = stock.info.get("symbol", None)
+
+    if not symbol:
+        raise Exception("Ticker not found")
+
+    stock_data = {
+        "ticker": ticker.upper(),
+        "meta": build_meta(stock),
+        "price_data": build_price_data(ticker, "1y"),
+        "fundamentals": build_fundamentals(stock),
+        "valuation_ratios": build_valuation_ratios(stock),
+        "technical_indicators": build_technical_indicators(stock),
+        "analyst_summary": build_analyst_summary(stock),
+    }
+
+    return stock_data
