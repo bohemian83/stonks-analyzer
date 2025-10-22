@@ -1,8 +1,22 @@
+Screen {
+    align: center middle;
+    background: #282828;
+}
+
+#app-container {
+    width: 80%;
+    height:80%; 
+    border: heavy $primary;
+    background: #3c3836;
+    box-sizing: border-box;
+    color: #ebdbb2;
+}
+
 #top {
     height: 10%;
     width: 100%;
     layout: grid;
-    grid-size: 3 2;
+    grid-size: 6 1;
     grid-rows: 1fr 1fr;
 }
 
@@ -10,7 +24,7 @@
     height: 10%;
     width: 100%;
     layout: grid;
-    grid-size: 3 2;
+    grid-size: 6 1;
     border: solid;
 }
 
@@ -66,13 +80,13 @@
 }
 
 #top1, #top2, #top3, #top4, #top5, #top6 {
-    color: white;
+    border: #504945;
     height: 100%;
     content-align: center middle;
 }
 
 #btm1, #btm2, #btm3, #btm4, #btm5, #btm6 {
-    color: white;
     height: 100%;
+    border: #504945;
     content-align: center middle; 
 }
