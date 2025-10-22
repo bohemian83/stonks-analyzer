@@ -61,7 +61,7 @@ class StockDashboard(Widget):
                 Static("", id="btm3"),
                 Static("", id="btm4"),
                 Static("", id="btm5"),
-                Static("", id="bmt6"),
+                Static("", id="btm6"),
                 id="bottom",
             ),
             id="content",
