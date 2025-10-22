@@ -63,6 +63,41 @@ class AnalyseApp(App):
         # plt.title(f"{self.ticker} Stock Price")
         pass
 
+    def update_left(self) -> None:
+        self.query_one("#lcl1").update(
+            f"Revenue (TTM): ${self.stock_data['fundamentals']['revenue_ttm']}"
+        )
+        self.query_one("#lcl2").update(
+            f"Net Income(TTM): ${self.stock_data['fundamentals']['net_income_ttm']}"
+        )
+        self.query_one("#lcl3").update(
+            f"Free Cash Flow (TTM): ${self.stock_data['fundamentals']['free_cash_flow_ttm']}"
+        )
+        self.query_one("#lcl4").update(
+            f"Debt / Equity: {self.stock_data['fundamentals']['debt_to_equity']}"
+        )
+        self.query_one("#lcl5").update(f"ROE: {self.stock_data['fundamentals']['roe']}")
+        self.query_one("#lcl6").update(
+            f"Dividend Yield: {self.stock_data['fundamentals']['dividend_yield']}"
+        )
+        self.query_one("#lcl7").update(
+            f"Revenue Growth YoY: {self.stock_data['fundamentals']['revenue_growth_yoy']}"
+        )
+        self.query_one("#lcl8").update(
+            f"Earnings Growth YoY: {self.stock_data['fundamentals']['earnings_growth_yoy']}"
+        )
+
+    def update_right(self) -> None:
+        self.query_one("#rcl1").update(
+            f"**Valuation Ratios\n\n • P/E: {self.stock_data['valuation_ratios']['pe_ratio']}\n • P/B: {self.stock_data['valuation_ratios']['pb_ratio']}\n • PEG: {self.stock_data['valuation_ratios']['peg_ratio']}\n • EV / EBITDA: {self.stock_data['valuation_ratios']['ev_to_ebitda']}\n • Price / Sales: {self.stock_data['valuation_ratios']['price_to_sales']}"
+        )
+        self.query_one("#rcl2").update(
+            f"**Analyst Consensus\n\n • Recommendation: {self.stock_data['analyst_summary']['consensus_recommendation']}\n • Rating Avg: {self.stock_data['analyst_summary']['rating_average']} (1=Sell, 5=Buy)\n • Analyst Count: {self.stock_data['analyst_summary']['analyst_count']}"
+        )
+        self.query_one("#rcl3").update(
+            f"**Price Targets\n\n • Mean: ${self.stock_data['analyst_summary']['target_price_mean']}\n • High: ${self.stock_data['analyst_summary']['target_price_high']}\n • Low: ${self.stock_data['analyst_summary']['target_price_low']}"
+        )
+
     def update_top(self) -> None:
         self.query_one("#top1").update(
             f"{self.stock_data['meta']['company_name']} ({self.stock_data['ticker']})"
@@ -77,9 +112,7 @@ class AnalyseApp(App):
         self.query_one("#top5").update(
             f"Market Cap: {self.stock_data['meta']['market_cap']}"
         )
-        self.query_one("#top6").update(
-            f"P/E: {self.stock_data['valuation_ratios']['pe_ratio']}"
-        )
+        self.query_one("#top6").update(f"Country: {self.stock_data['meta']['country']}")
 
     def update_bottom(self) -> None:
         self.query_one("#btm1").update(
@@ -104,3 +137,5 @@ class AnalyseApp(App):
     def update_labels(self) -> None:
         self.update_top()
         self.update_bottom()
+        self.update_left()
+        self.update_right()
