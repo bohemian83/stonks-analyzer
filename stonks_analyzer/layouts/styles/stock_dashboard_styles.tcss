@@ -4,16 +4,16 @@ Screen {
 }
 
 #app-container {
-    width: 80%;
+    width: 90%;
     height:80%; 
-    border: heavy $primary;
+    border: #504945;
     background: #3c3836;
     box-sizing: border-box;
     color: #ebdbb2;
 }
 
 #top {
-    height: 10%;
+    height: 9%;
     width: 100%;
     layout: grid;
     grid-size: 6 1;
@@ -21,62 +21,58 @@ Screen {
 }
 
 #bottom {
-    height: 10%;
+    height: auto;
     width: 100%;
     layout: grid;
     grid-size: 6 1;
-    border: solid;
 }
 
 #main {
-    height: 80%;
+    height: 85%;
     width: 100%;
     layout: grid;
     grid-size: 3 1;
     grid-columns: 1fr 8fr 1fr;
-    border: solid;
-}
-
-#left-main-col {
-    height: 1fr;
-    border: solid;
+    border: #504945;
+    content-align: center middle; 
 }
 
 #center-main-col {
+    border: #504945;
     height: 1fr;
-    border: solid;
     grid-size: 1 2;
     grid-rows: 7fr 1fr;
 }
 
 #right-main-col {
+    border: #504945;
     height: 1fr;
-    border: solid;
-    grid-size: 1 12;
+    grid-size: 1 3;
+    grid-rows: 1fr 1fr 1fr;
+    content-align: center middle; 
 }
 
 #left-main-col {
+    border: #504945;
     height: 1fr;
-    border: solid;
     grid-size: 1 8;
+    content-align: center middle; 
 }
 
 .rcl, .lcl {
-    width: 1fr;
-    border: solid;
+    border: #504945;
+    content-align: center middle; 
 }
 
 #graph {
-    border: solid;
 }
 
 #under-graph {
-    border: solid;
     grid-size: 3 1;
 }
 
 #ug1, #ug2, #ug3 {
-    border: solid;
+    border: #504945;
 }
 
 #top1, #top2, #top3, #top4, #top5, #top6 {
