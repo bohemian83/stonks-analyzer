@@ -125,24 +125,43 @@ def build_fundamentals(stock):
     stock_info = stock.info
     stock_cashflow = stock.cashflow
 
+    revenue_ttm = format_number(stock_ttm_income.loc["Total Revenue"].iloc[0].item())
+    net_income_ttm = format_number(stock_ttm_income.loc["Net Income"].iloc[0].item())
+    free_cash_flow_ttm = format_number(
+        stock_cashflow.loc["Free Cash Flow"].iloc[0].item()
+    )
+    total_assets = format_number(stock_balance.loc["Total Assets"].iloc[0].item())
+    total_liabilities = format_number(
+        stock_balance.loc["Total Liabilities Net Minority Interest"].iloc[0].item()
+    )
+    shareholders_equity = format_number(
+        stock_balance.loc["Stockholders Equity"].iloc[0].item()
+    )
+    debt_to_equity = round(
+        stock_balance.loc["Total Debt"].iloc[0].item()
+        / stock_balance.loc["Stockholders Equity"].iloc[0].item(),
+        2,
+    )
+    roe = (
+        stock_ttm_income.loc["Net Income"].iloc[0].item()
+        / stock_balance.loc["Stockholders Equity"].iloc[0].item()
+    )
+    divident_yield = stock_info["trailingAnnualDividendYield"]
+    revenue_growth_yoy = stock_info["revenueGrowth"]
+    earnings_growth_yoy = stock_info["earningsGrowth"]
+
     fundamentals = {
-        "revenue_ttm": stock_ttm_income.loc["Total Revenue"].iloc[0].item(),
-        "net_income_ttm": stock_ttm_income.loc["Net Income"].iloc[0].item(),
-        "free_cash_flow_ttm": stock_cashflow.loc["Free Cash Flow"].iloc[0].item(),
-        "total_assets": stock_balance.loc["Total Assets"].iloc[0].item(),
-        "total_liabilities": stock_balance.loc[
-            "Total Liabilities Net Minority Interest"
-        ]
-        .iloc[0]
-        .item(),
-        "shareholders_equity": stock_balance.loc["Stockholders Equity"].iloc[0].item(),
-        "debt_to_equity": stock_balance.loc["Total Debt"].iloc[0].item()
-        / stock_balance.loc["Stockholders Equity"].iloc[0].item(),
-        "roe": stock_ttm_income.loc["Net Income"].iloc[0].item()
-        / stock_balance.loc["Stockholders Equity"].iloc[0].item(),
-        "dividend_yield": stock_info["trailingAnnualDividendYield"],
-        "revenue_growth_yoy": stock_info["revenueGrowth"],
-        "earnings_growth_yoy": stock_info["earningsGrowth"],
+        "revenue_ttm": revenue_ttm,
+        "net_income_ttm": net_income_ttm,
+        "free_cash_flow_ttm": free_cash_flow_ttm,
+        "total_assets": total_assets,
+        "total_liabilities": total_liabilities,
+        "shareholders_equity": shareholders_equity,
+        "debt_to_equity": debt_to_equity,
+        "roe": f"{roe:.0%}",
+        "dividend_yield": f"{divident_yield:.2%}",
+        "revenue_growth_yoy": f"{revenue_growth_yoy:.1%}",
+        "earnings_growth_yoy": f"{earnings_growth_yoy:.1%}",
     }
 
     return fundamentals
@@ -151,12 +170,13 @@ def build_fundamentals(stock):
 def build_valuation_ratios(stock):
     stock_info = stock.info
     valuation_ratios = {
-        "pe_ratio": stock_info["forwardPE"],
-        "pb_ratio": stock_info["priceToBook"],
-        "peg_ratio": stock_info["trailingPegRatio"],
-        "ev_to_ebitda": stock_info["enterpriseToEbitda"],
-        "price_to_sales": stock_info["priceToSalesTrailing12Months"],
+        "pe_ratio": round(stock_info["forwardPE"], 1),
+        "pb_ratio": round(stock_info["priceToBook"], 1),
+        "peg_ratio": round(stock_info["trailingPegRatio"], 1),
+        "ev_to_ebitda": round(stock_info["enterpriseToEbitda"], 1),
+        "price_to_sales": round(stock_info["priceToSalesTrailing12Months"], 1),
     }
+
     return valuation_ratios
 
 
@@ -195,13 +215,13 @@ def build_technical_indicators(stock):
 def build_analyst_summary(stock):
     stock_info = stock.info
     analyst_summary = {
-        "rating_average": stock_info["recommendationMean"],
+        "rating_average": round(stock_info["recommendationMean"], 2),
         "rating_scale": "1=Sell, 5=Buy",
         "analyst_count": stock_info["numberOfAnalystOpinions"],
-        "target_price_mean": stock_info["targetMeanPrice"],
-        "target_price_high": stock_info["targetHighPrice"],
-        "target_price_low": stock_info["targetLowPrice"],
-        "consensus_recommendation": stock_info["recommendationKey"],
+        "target_price_mean": round(stock_info["targetMeanPrice"], 2),
+        "target_price_high": round(stock_info["targetHighPrice"], 2),
+        "target_price_low": round(stock_info["targetLowPrice"], 2),
+        "consensus_recommendation": stock_info["recommendationKey"].upper(),
     }
 
     return analyst_summary
