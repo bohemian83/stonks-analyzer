@@ -35,23 +35,6 @@ import logging
 ===================================================================================
 """
 
-logging.getLogger("yfinance").setLevel(logging.CRITICAL)
-
-
-def analyze(ticker):
-    """Analyze a single stock"""
-
-    try:
-        app = AnalyseApp(ticker)
-        app.run()
-    except Exception as e:
-        print(f"Error: {e}")
-
-
-def compare(ticker1, ticker2):
-    """Compare two stocks"""
-    print(f"Comparing {ticker1} vs {ticker2}")
-
 
 def main():
     if len(sys.argv) < 2:
@@ -61,21 +44,26 @@ def main():
         sys.exit(1)
 
     if sys.argv[1] == "analyze":
-        if len(sys.argv) < 3:
-            print("Usage: uv run stonks [options] analyze STOCK")
+        if len(sys.argv) < 2:
+            print("Usage: uv run stonks [options] analyze")
             sys.exit(1)
 
-        ticker = sys.argv[2]
-        analyze(ticker)
+        try:
+            app = AnalyseApp()
+            app.run()
+        except Exception as e:
+            print(f"Error: {e}")
 
     if sys.argv[1] == "compare":
-        if len(sys.argv) < 4:
-            print("Usage: uv run stonks [options] analyze STOCK")
+        if len(sys.argv) < 2:
+            print("Usage: uv run stonks [options] compare")
             sys.exit(1)
-
-        ticker1 = sys.argv[2]
-        ticker2 = sys.argv[3]
-        compare(ticker1, ticker2)
+        print("comparing")
+        # try:
+        #     app = CompareApp()
+        #     app.run()
+        # except Exception as e:
+        #     print(f"Error: {e}")
 
 
 if __name__ == "__main__":
