@@ -3,10 +3,6 @@ Screen {
     background: #282828;
 }
 
-Footer {
-    text-align: center;
-}
-
 #app-container {
     width: 90%;
     height:80%; 
@@ -44,8 +40,6 @@ Footer {
 #center-main-col {
     border: #504945;
     height: 1fr;
-    grid-size: 1 2;
-    grid-rows: 7fr 1fr;
 }
 
 #right-main-col {
@@ -66,17 +60,6 @@ Footer {
 .rcl, .lcl {
     border: #504945;
     content-align: center middle; 
-}
-
-#graph {
-}
-
-#under-graph {
-    grid-size: 3 1;
-}
-
-#ug1, #ug2, #ug3 {
-    border: #504945;
 }
 
 #top1, #top2, #top3, #top4, #top5, #top6 {
