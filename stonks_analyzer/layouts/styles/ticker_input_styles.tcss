@@ -5,12 +5,19 @@ TickerInputScreen {
 #ticker-dialog {
     width: 50;
     height: auto;
-    border: thick $background 80%;
-    background: $surface;
+    border: #504945;
+    background: #3c3836;
     padding: 1 2;
+    color: #ebdbb2;
 }
 
+#question {
+    width: 100%;
+    content-align: center middle;
+}
 #ticker-input {
+    border: #504945;
+    background: #282828;
     margin: 1 0;
 }
 
@@ -25,8 +32,10 @@ TickerInputScreen {
     width: 100%;
     height: auto;
     align: center middle;
+    margin: 0 1;
 }
 
-Button {
+#ok {
+    background: #FBF1C7;
     margin: 0 1;
 }
