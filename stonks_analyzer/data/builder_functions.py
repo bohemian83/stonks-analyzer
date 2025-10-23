@@ -88,6 +88,7 @@ def build_price_data(ticker, period):
     historical_data = yf.download(
         ticker, end=end, period=period, interval="1d", progress=False, auto_adjust=True
     )
+    graph_data = historical_data
     historical_data = historical_data.reset_index()
 
     price_history = []
@@ -116,7 +117,7 @@ def build_price_data(ticker, period):
 
     pct_change = abs(pct_change)
 
-    return price_history, f"{change} {pct_change:.1%}"
+    return price_history, f"{change} {pct_change:.1%}", graph_data
 
 
 def build_fundamentals(stock):
