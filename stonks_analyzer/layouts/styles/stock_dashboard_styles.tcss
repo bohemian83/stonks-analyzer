@@ -3,6 +3,10 @@ Screen {
     background: #282828;
 }
 
+Footer {
+    text-align: center;
+}
+
 #app-container {
     width: 90%;
     height:80%; 
