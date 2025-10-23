@@ -1,11 +1,11 @@
 # Stonks Analyzer
 
-A comprehensive terminal-based stock analysis application that provides real-time financial data visualization and analysis for stocks.
+A terminal-based stock analysis application that provides financial data visualization and analysis for stocks.
 
 ## Features
 
-- **Interactive Terminal UI**: Rich terminal interface built with Textual framework
-- **Real-time Stock Data**: Live stock information powered by Yahoo Finance API
+- ** Terminal UI**: Rich terminal interface built with Textual framework
+- ** Stock Data**: Stock information powered by Yahoo Finance API
 - **Comprehensive Analysis**:
     - Company fundamentals (revenue, income, cash flow, ratios)
     - Technical indicators (RSI, moving averages, volatility)
