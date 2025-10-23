@@ -77,8 +77,12 @@ class StockDashboard(Widget):
         plt.grid(True, True)
         plt.candlestick(dates, graph_data)
 
-        plt.plot(sma50d_dates, sma50.tolist(), label="50-day MA", marker="braille")
-        plt.plot(sma200d_dates, sma200.tolist(), label="200-day MA", marker="braille")
+        plt.plot(
+            sma50d_dates, sma50.tolist(), label="50-day Moving Avg", marker="braille"
+        )
+        plt.plot(
+            sma200d_dates, sma200.tolist(), label="200-day Moving Avg", marker="braille"
+        )
 
         plt.title(f"{stock_data['ticker']} Price Candlesticks (1y)")
         plt.xlabel("Date")
@@ -140,7 +144,7 @@ class StockDashboard(Widget):
 
     def update_bottom(self, stock_data: dict) -> None:
         self.query_one("#btm1").update(
-            f"30d Volatility: {stock_data['technical_indicators']['volatility_30d']}"
+            f"30-Day Volatility: {stock_data['technical_indicators']['volatility_30d']}"
         )
         self.query_one("#btm2").update(
             f"Beta: {stock_data['technical_indicators']['beta']}"
@@ -149,9 +153,9 @@ class StockDashboard(Widget):
             f"RSI(14): {stock_data['technical_indicators']['rsi_14'][0]} {stock_data['technical_indicators']['rsi_14'][1]} "
         )
         self.query_one("#btm4").update(
-            f"50d MA: ${stock_data['technical_indicators']['50_day_ma'][1]}"
+            f"50-Day Moving Avg: ${stock_data['technical_indicators']['50_day_ma'][1]}"
         )
         self.query_one("#btm5").update(
-            f"200d MA: ${stock_data['technical_indicators']['200_day_ma'][1]}"
+            f"200-Day Moving Avg: ${stock_data['technical_indicators']['200_day_ma'][1]}"
         )
         self.query_one("#btm6").update(f"{stock_data['technical_indicators']['cross']}")
