@@ -206,8 +206,8 @@ def build_technical_indicators(stock):
 
     technical_indicators = {
         "rsi_14": calculate_rsi(data_rsi),
-        "50_day_ma": [ma_50d, sma_50d],
-        "200_day_ma": [ma_200d, sma_200d],
+        "50_day_ma": [ma_50d, round(sma_50d, 2)],
+        "200_day_ma": [ma_200d, round(sma_200d, 2)],
         "cross": "Bullish Trend -> Golden Cross"
         if sma_50d > sma_200d
         else "Bearish Trend -> Death Cross",
