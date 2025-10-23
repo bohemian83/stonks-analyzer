@@ -32,12 +32,6 @@ class StockDashboard(Widget):
                 ),
                 Grid(
                     PlotextPlot(id="graph"),
-                    Grid(
-                        Placeholder("under graph 1", id="ug1"),
-                        Placeholder("under graph 2", id="ug2"),
-                        Placeholder("under graph 3", id="ug3"),
-                        id="under-graph",
-                    ),
                     id="center-main-col",
                 ),
                 Grid(
@@ -70,12 +64,23 @@ class StockDashboard(Widget):
     def update_graph(self, stock_data: dict) -> None:
         graph_data = stock_data["price_data"][2]
         graph_data.columns = graph_data.columns.droplevel(1)
+        dates = px.datetimes_to_string(graph_data.index)
+
         plt = self.query_one("#graph").plt
 
-        dates = px.datetimes_to_string(graph_data.index)
+        sma50 = stock_data["technical_indicators"]["50_day_ma"][0]
+        sma200 = stock_data["technical_indicators"]["200_day_ma"][0]
+
+        sma50d_dates = px.datetimes_to_string(sma50.index)
+        sma200d_dates = px.datetimes_to_string(sma200.index)
+
+        plt.grid(True, True)
         plt.candlestick(dates, graph_data)
-        plt.theme("salat")
-        plt.title("Stock Price CandleSticks")
+
+        plt.plot(sma50d_dates, sma50.tolist(), label="50-day MA", marker="braille")
+        plt.plot(sma200d_dates, sma200.tolist(), label="200-day MA", marker="braille")
+
+        plt.title(f"{stock_data['ticker']} Price Candlesticks (1y)")
         plt.xlabel("Date")
         plt.ylabel("Stock Price $")
 
@@ -115,13 +120,18 @@ class StockDashboard(Widget):
         )
 
     def update_top(self, stock_data: dict) -> None:
+        price_with_color = (
+            f"[green]{stock_data['price_data'][1]}[/]"
+            if "▲" in {stock_data["price_data"][1]}
+            else f"[red]{stock_data['price_data'][1]}[/]"
+        )
         self.query_one("#top1").update(
             f"{stock_data['meta']['company_name']} ({stock_data['ticker']})"
         )
         self.query_one("#top2").update(f"Exchange: {stock_data['meta']['exchange']}")
         self.query_one("#top3").update(f"Sector: {stock_data['meta']['sector']}")
         self.query_one("#top4").update(
-            f"Price: ${round(stock_data['price_data'][0][-1]['close'], 2)} {stock_data['price_data'][1]} "
+            f"Price: ${round(stock_data['price_data'][0][-1]['close'], 2)} {price_with_color}"
         )
         self.query_one("#top5").update(
             f"Market Cap: {stock_data['meta']['market_cap']}"
@@ -139,9 +149,9 @@ class StockDashboard(Widget):
             f"RSI(14): {stock_data['technical_indicators']['rsi_14'][0]} {stock_data['technical_indicators']['rsi_14'][1]} "
         )
         self.query_one("#btm4").update(
-            f"50d MA: ${stock_data['technical_indicators']['50_day_ma']}"
+            f"50d MA: ${stock_data['technical_indicators']['50_day_ma'][1]}"
         )
         self.query_one("#btm5").update(
-            f"200d MA: ${stock_data['technical_indicators']['200_day_ma']}"
+            f"200d MA: ${stock_data['technical_indicators']['200_day_ma'][1]}"
         )
         self.query_one("#btm6").update(f"{stock_data['technical_indicators']['cross']}")
