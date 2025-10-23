@@ -1,6 +1,7 @@
 import yfinance as yf
 import numpy as np
-from datetime import datetime, timedelta
+import pandas as pd
+from datetime import datetime
 import logging
 
 logging.getLogger("yfinance").setLevel(logging.CRITICAL)
@@ -54,7 +55,7 @@ def calculate_sma(data_sma, days):
     number_days = days
     data["SMA"] = data["Close"].rolling(window=number_days).mean()
 
-    return data["SMA"].iloc[-1].item()
+    return data["SMA"], data["SMA"].iloc[-1].item()
 
 
 def calculate_30d_volatility(data_vol):
@@ -186,30 +187,33 @@ def build_technical_indicators(stock):
     ticker = stock_info["symbol"]
 
     data = yf.download(
-        ticker, period="1y", interval="1d", progress=False, auto_adjust=True
+        ticker, period="3y", interval="1d", progress=False, auto_adjust=True
     )
-    data = data.reset_index()
 
-    data_len = data["Date"].size
+    data_len = data.index.size
     data_rsi = data[-90:data_len].copy()
-    data_50d = data[-100:data_len].copy()
-    data_200d = data[-200:data_len].copy()
+    data_50d = data[-465:data_len].copy()
+    data_200d = data[-765:data_len].copy()
     data_30d = data[-30:data_len].copy()
 
-    sma_50d = round(calculate_sma(data_50d, 50), 2)
-    sma_200d = round(calculate_sma(data_200d, 200), 2)
+    ma_50d, sma_50d = calculate_sma(data_50d, 50)
+    ma_200d, sma_200d = calculate_sma(data_200d, 200)
+
+    start_date = ma_50d.index[-1] - pd.Timedelta(days=365)
+
+    ma_50d = ma_50d.dropna()[start_date:]
+    ma_200d = ma_200d.dropna()[start_date:]
 
     technical_indicators = {
         "rsi_14": calculate_rsi(data_rsi),
-        "50_day_ma": sma_50d,
-        "200_day_ma": sma_200d,
+        "50_day_ma": [ma_50d, sma_50d],
+        "200_day_ma": [ma_200d, sma_200d],
         "cross": "Bullish Trend -> Golden Cross"
         if sma_50d > sma_200d
         else "Bearish Trend -> Death Cross",
         "beta": stock_info["beta"],
         "volatility_30d": calculate_30d_volatility(data_30d),
     }
-
     return technical_indicators
 
 
