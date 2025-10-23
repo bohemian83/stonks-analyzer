@@ -1,12 +1,10 @@
 import plotext as px
 from textual.app import App, ComposeResult
-from textual_plotext import PlotextPlot
 from textual.containers import Container
+from textual.widgets import Footer, Header
 from stonks_analyzer.layouts.stock_dashboard import StockDashboard
 from stonks_analyzer.layouts.ticker_input_screen import TickerInputScreen
 from stonks_analyzer.data.stock_data_builder import get_stock_data
-
-# Constants at the top of your file
 
 
 class AnalyseApp(App):
@@ -14,15 +12,24 @@ class AnalyseApp(App):
 
     BINDINGS = [
         ("ctrl+t", "change_ticker", "Change Ticker"),
+        ("[", "previous_theme", "Previous theme"),
+        ("]", "next_theme", "Next theme"),
     ]
 
     def __init__(self):
         super().__init__()
+        self.title = "Stonks Analyzer"
         self.stock_data = None
+        self.theme = "gruvbox"
+        self.theme_names = [
+            theme for theme in self.available_themes if theme != "textual-ansi"
+        ]
 
     def compose(self) -> ComposeResult:
+        yield Header()
         with Container(id="app-container"):
             yield StockDashboard()
+        yield Footer()
 
     def on_mount(self) -> None:
         self.push_screen(TickerInputScreen(), self.handle_ticker_input)
@@ -39,103 +46,28 @@ class AnalyseApp(App):
 
         try:
             self.stock_data = get_stock_data(self.ticker)
-            self.update_graph()
-            self.update_labels()
+            self.query_one(StockDashboard).update_all(self.stock_data)
 
         except Exception as e:
-            print(f"exception {e} caught")
             self.push_screen(
                 TickerInputScreen(error_message=str(e)), self.handle_ticker_input
             )
 
-    def update_graph(self) -> None:
-        # plt = self.query_one("#graph", PlotextPlot).plt
-        # dates = px.datetimes_to_string(self.stock_data.index)
-        # plt.candlestick(
-        #     dates,
-        #     [
-        #         self.stock_data["Open"].tolist(),
-        #         self.stock_data["High"].tolist(),
-        #         self.stock_data["Low"].tolist(),
-        #         self.stock_data["Close"].tolist(),
-        #     ],
-        # )
-        # plt.title(f"{self.ticker} Stock Price")
-        pass
+    def action_next_theme(self) -> None:
+        themes = self.theme_names
+        index = themes.index(self.current_theme.name)
+        self.theme = themes[(index + 1) % len(themes)]
+        self.notify_new_theme(self.current_theme.name)
 
-    def update_left(self) -> None:
-        self.query_one("#lcl1").update(
-            f"Revenue (TTM): ${self.stock_data['fundamentals']['revenue_ttm']}"
-        )
-        self.query_one("#lcl2").update(
-            f"Net Income(TTM): ${self.stock_data['fundamentals']['net_income_ttm']}"
-        )
-        self.query_one("#lcl3").update(
-            f"Free Cash Flow (TTM): ${self.stock_data['fundamentals']['free_cash_flow_ttm']}"
-        )
-        self.query_one("#lcl4").update(
-            f"Debt / Equity: {self.stock_data['fundamentals']['debt_to_equity']}"
-        )
-        self.query_one("#lcl5").update(f"ROE: {self.stock_data['fundamentals']['roe']}")
-        self.query_one("#lcl6").update(
-            f"Dividend Yield: {self.stock_data['fundamentals']['dividend_yield']}"
-        )
-        self.query_one("#lcl7").update(
-            f"Revenue Growth YoY: {self.stock_data['fundamentals']['revenue_growth_yoy']}"
-        )
-        self.query_one("#lcl8").update(
-            f"Earnings Growth YoY: {self.stock_data['fundamentals']['earnings_growth_yoy']}"
-        )
+    def action_previous_theme(self) -> None:
+        themes = self.theme_names
+        index = themes.index(self.current_theme.name)
+        self.theme = themes[(index - 1) % len(themes)]
+        self.notify_new_theme(self.current_theme.name)
 
-    def update_right(self) -> None:
-        self.query_one("#rcl1").update(
-            f"**Valuation Ratios\n\n • P/E: {self.stock_data['valuation_ratios']['pe_ratio']}\n • P/B: {self.stock_data['valuation_ratios']['pb_ratio']}\n • PEG: {self.stock_data['valuation_ratios']['peg_ratio']}\n • EV / EBITDA: {self.stock_data['valuation_ratios']['ev_to_ebitda']}\n • Price / Sales: {self.stock_data['valuation_ratios']['price_to_sales']}"
+    def notify_new_theme(self, theme_name: str) -> None:
+        self.clear_notifications()
+        self.notify(
+            title="Theme updated",
+            message=f"Theme is {theme_name}.",
         )
-        self.query_one("#rcl2").update(
-            f"**Analyst Consensus\n\n • Recommendation: {self.stock_data['analyst_summary']['consensus_recommendation']}\n • Rating Avg: {self.stock_data['analyst_summary']['rating_average']} (1=Sell, 5=Buy)\n • Analyst Count: {self.stock_data['analyst_summary']['analyst_count']}"
-        )
-        self.query_one("#rcl3").update(
-            f"**Price Targets\n\n • Mean: ${self.stock_data['analyst_summary']['target_price_mean']}\n • High: ${self.stock_data['analyst_summary']['target_price_high']}\n • Low: ${self.stock_data['analyst_summary']['target_price_low']}"
-        )
-
-    def update_top(self) -> None:
-        self.query_one("#top1").update(
-            f"{self.stock_data['meta']['company_name']} ({self.stock_data['ticker']})"
-        )
-        self.query_one("#top2").update(
-            f"Exchange: {self.stock_data['meta']['exchange']}"
-        )
-        self.query_one("#top3").update(f"Sector: {self.stock_data['meta']['sector']}")
-        self.query_one("#top4").update(
-            f"Price: ${round(self.stock_data['price_data'][0][-1]['close'], 2)} {self.stock_data['price_data'][1]} "
-        )
-        self.query_one("#top5").update(
-            f"Market Cap: {self.stock_data['meta']['market_cap']}"
-        )
-        self.query_one("#top6").update(f"Country: {self.stock_data['meta']['country']}")
-
-    def update_bottom(self) -> None:
-        self.query_one("#btm1").update(
-            f"30d Volatility: {self.stock_data['technical_indicators']['volatility_30d']}"
-        )
-        self.query_one("#btm2").update(
-            f"Beta: {self.stock_data['technical_indicators']['beta']}"
-        )
-        self.query_one("#btm3").update(
-            f"RSI(14): {self.stock_data['technical_indicators']['rsi_14'][0]} {self.stock_data['technical_indicators']['rsi_14'][1]} "
-        )
-        self.query_one("#btm4").update(
-            f"50d MA: ${self.stock_data['technical_indicators']['50_day_ma']}"
-        )
-        self.query_one("#btm5").update(
-            f"200d MA: ${self.stock_data['technical_indicators']['200_day_ma']}"
-        )
-        self.query_one("#btm6").update(
-            f"{self.stock_data['technical_indicators']['cross']}"
-        )
-
-    def update_labels(self) -> None:
-        self.update_top()
-        self.update_bottom()
-        self.update_left()
-        self.update_right()
