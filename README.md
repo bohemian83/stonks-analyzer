@@ -4,8 +4,8 @@ A terminal-based stock analysis application that provides financial data visuali
 
 ## Features
 
-- ** Terminal UI**: Rich terminal interface built with Textual framework
-- ** Stock Data**: Stock information powered by Yahoo Finance API
+- **Terminal UI**: Rich terminal interface built with Textual framework
+- **Stock Data**: Stock information powered by Yahoo Finance API
 - **Comprehensive Analysis**:
     - Company fundamentals (revenue, income, cash flow, ratios)
     - Technical indicators (RSI, moving averages, volatility)
@@ -67,4 +67,3 @@ stonks_analyzer/
 ## License
 
 This project is open source and available under the MIT License.
-
